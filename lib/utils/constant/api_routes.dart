@@ -12,4 +12,6 @@ class ApiRoutes {
 
   static const String fetchAbsencesRoute =
       '/8c3cbc94-d330-45fb-9431-9856df605706';
+  static const String fetchUsersRoute =
+      '/c44894ee-1ba2-4bfe-ba16-1261959e619f';
 }

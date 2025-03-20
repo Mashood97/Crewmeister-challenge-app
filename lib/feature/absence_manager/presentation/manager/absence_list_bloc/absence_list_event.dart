@@ -6,6 +6,14 @@ sealed class AbsenceListEvent extends Equatable {
 
 final class FetchAbsenceListEvent extends AbsenceListEvent {
   const FetchAbsenceListEvent();
+
+  @override
+  List<Object?> get props => [];
+}
+
+final class FetchUserListEvent extends AbsenceListEvent {
+  const FetchUserListEvent();
+
   @override
   List<Object?> get props => [];
 }

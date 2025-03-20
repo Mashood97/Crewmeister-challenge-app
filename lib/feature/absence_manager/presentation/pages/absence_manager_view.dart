@@ -23,7 +23,9 @@ class _AbsenceManagerViewState extends State<AbsenceManagerView> {
   void initState() {
     super.initState();
     absenceListBloc = getItInstance.get<AbsenceListBloc>();
-    absenceListBloc.add(const FetchAbsenceListEvent());
+    absenceListBloc
+      ..add(const FetchAbsenceListEvent())
+      ..add(const FetchUserListEvent());
   }
 
   @override
@@ -40,6 +42,7 @@ class _AbsenceManagerViewState extends State<AbsenceManagerView> {
       ),
       desktop: AbsenceManagerDesktopView(
         absenceListBloc: absenceListBloc,
+
       ),
     );
   }
