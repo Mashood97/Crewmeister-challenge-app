@@ -1,5 +1,6 @@
 import 'package:absence_manager_app/feature/absence_manager/domain/entities/response_entity/absence_response_entity.dart';
 import 'package:absence_manager_app/utils/extensions/context_extensions.dart';
+import 'package:absence_manager_app/utils/extensions/string_extensions.dart';
 import 'package:absence_manager_app/widget/responsive.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
@@ -18,9 +19,6 @@ class AbsenceListDataTable extends StatelessWidget {
       header: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text(
-            'Absence Manager',
-          ),
           SizedBox(
             width: getResponsiveValue(context, 200),
             child: Card(
@@ -121,21 +119,28 @@ class _AbsenceDataTableDataSource extends DataTableSource {
         ),
         DataCell(
           Text(
-            item.absenceType ?? '-',
+            item.absenceType?.isTextNotNullAndNotEmpty == true
+                ? item.absenceType ?? 'N/A'
+                : 'N/A',
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
           ),
         ),
         DataCell(
           Text(
-            item.absenceStartDate ?? '-',
+            item.absenceStartDate.isTextNotNullAndNotEmpty ==
+                true
+                ? item.absenceStartDate ?? '-'
+                : '-',
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
           ),
         ),
         DataCell(
           Text(
-            item.memberNote ?? 'N/A',
+            item.memberNote?.isTextNotNullAndNotEmpty == true
+                ? item.memberNote ?? '-'
+                : '-',
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
           ),
@@ -156,7 +161,9 @@ class _AbsenceDataTableDataSource extends DataTableSource {
         ),
         DataCell(
           Text(
-            item.admitterNote ?? '',
+            item.admitterNote?.isTextNotNullAndNotEmpty == true
+                ? item.admitterNote ?? '-'
+                : '-',
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
           ),

@@ -21,7 +21,7 @@ class AbsenceManagerDesktopView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Mashood's Crew"),
+        title: const Text('Absence Manager'),
         centerTitle: false,
         actions: [
           FloatingActionButton.small(
