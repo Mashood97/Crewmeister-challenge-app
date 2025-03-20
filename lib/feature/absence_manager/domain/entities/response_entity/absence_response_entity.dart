@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
 /// rejectedAt,confirmedAt will be used to manage the Status
 /// (can be 'Requested', 'Confirmed' or 'Rejected').
@@ -37,4 +38,16 @@ class AbsenceResponseEntity extends Equatable {
         absenceEndDate,
         userId,
       ];
+
+  String get absenceStatus => confirmedAt == null && rejectedAt == null
+      ? 'Requested'
+      : confirmedAt != null
+          ? 'Confirmed'
+          : 'Rejected';
+
+  Color get absenceStatusColor => confirmedAt == null && rejectedAt == null
+      ? Colors.amber
+      : confirmedAt != null
+          ? Colors.green
+          : Colors.red;
 }

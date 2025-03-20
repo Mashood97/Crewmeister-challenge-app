@@ -50,6 +50,7 @@ class _AppState extends State<App> {
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, state) {
           return MaterialApp.router(
+            debugShowCheckedModeBanner: false,
             themeMode: state.themeMode,
             theme: state.lightTheme,
             darkTheme: state.darkTheme,
