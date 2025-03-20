@@ -5,10 +5,16 @@ sealed class AbsenceListEvent extends Equatable {
 }
 
 final class FetchAbsenceListEvent extends AbsenceListEvent {
-  const FetchAbsenceListEvent();
+  const FetchAbsenceListEvent({
+    this.selectedAbsenceType = '',
+  });
+
+  final String selectedAbsenceType;
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [
+        selectedAbsenceType,
+      ];
 }
 
 final class FetchUserListEvent extends AbsenceListEvent {
