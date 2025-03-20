@@ -97,7 +97,6 @@ class AppTheme {
       ),
 
       scaffoldBackgroundColor: darkColors.background,
-
       /// TYPOGRAPHY
       textTheme: AppTextTheme.darkTextTheme,
       iconTheme: IconThemeData(

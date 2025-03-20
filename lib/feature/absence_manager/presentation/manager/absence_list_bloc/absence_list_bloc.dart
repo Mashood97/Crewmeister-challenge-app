@@ -10,6 +10,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 
 part 'absence_list_event.dart';
+
 part 'absence_list_state.dart';
 
 class AbsenceListBloc extends Bloc<AbsenceListEvent, AbsenceListState> {
@@ -20,6 +21,7 @@ class AbsenceListBloc extends Bloc<AbsenceListEvent, AbsenceListState> {
           const AbsenceListInitial(
             absenceList: [],
             userMap: {},
+            absenceTypeList: [],
           ),
         ) {
     on<FetchAbsenceListEvent>(
@@ -41,7 +43,10 @@ class AbsenceListBloc extends Bloc<AbsenceListEvent, AbsenceListState> {
   ) async {
     emitter(
       AbsenceListLoading(
-        absenceList: state.absenceList,
+        absenceList: const [],
+        absenceTypeList: state.absenceTypeList,
+        hasFiltersApplied: state.hasFiltersApplied,
+        selectedAbsenceTypeFilter: state.selectedAbsenceTypeFilter,
         userMap: state.userMap,
       ),
     );
@@ -53,16 +58,37 @@ class AbsenceListBloc extends Bloc<AbsenceListEvent, AbsenceListState> {
       (error) => emitter(
         AbsenceListFailure(
           absenceList: state.absenceList,
+          absenceTypeList: state.absenceTypeList,
+          selectedAbsenceTypeFilter: event.selectedAbsenceType,
           errorMessage: error.errorStatus,
+          hasFiltersApplied: state.hasFiltersApplied,
           userMap: state.userMap,
         ),
       ),
-      (success) => emitter(
-        AbsenceListLoaded(
-          absenceList: success,
-          userMap: state.userMap,
-        ),
-      ),
+      (success) {
+        var absenceList = success;
+        if (event.selectedAbsenceType.isNotEmpty) {
+          absenceList = absenceList
+              .where(
+                (absence) =>
+                    absence.absenceType?.toLowerCase() ==
+                    event.selectedAbsenceType.toLowerCase(),
+              )
+              .toList();
+        }
+        return emitter(
+          AbsenceListLoaded(
+            absenceList: absenceList,
+            selectedAbsenceTypeFilter: event.selectedAbsenceType.isEmpty
+                ? absenceList.first.absenceType ?? ''
+                : event.selectedAbsenceType,
+            hasFiltersApplied: event.selectedAbsenceType.isNotEmpty,
+            absenceTypeList:
+                success.map((data) => data.absenceType ?? '').toSet().toList(),
+            userMap: state.userMap,
+          ),
+        );
+      },
     );
   }
 
@@ -73,6 +99,9 @@ class AbsenceListBloc extends Bloc<AbsenceListEvent, AbsenceListState> {
     emitter(
       AbsenceListLoading(
         absenceList: state.absenceList,
+        absenceTypeList: state.absenceTypeList,
+        hasFiltersApplied: state.hasFiltersApplied,
+        selectedAbsenceTypeFilter: state.selectedAbsenceTypeFilter,
         userMap: state.userMap,
       ),
     );
@@ -84,6 +113,9 @@ class AbsenceListBloc extends Bloc<AbsenceListEvent, AbsenceListState> {
       (error) => emitter(
         AbsenceListFailure(
           absenceList: state.absenceList,
+          hasFiltersApplied: state.hasFiltersApplied,
+          absenceTypeList: state.absenceTypeList,
+          selectedAbsenceTypeFilter: state.selectedAbsenceTypeFilter,
           errorMessage: error.errorStatus,
           userMap: state.userMap,
         ),
@@ -99,6 +131,9 @@ class AbsenceListBloc extends Bloc<AbsenceListEvent, AbsenceListState> {
         return emitter(
           AbsenceListLoaded(
             absenceList: state.absenceList,
+            absenceTypeList: state.absenceTypeList,
+            hasFiltersApplied: state.hasFiltersApplied,
+            selectedAbsenceTypeFilter: state.selectedAbsenceTypeFilter,
             userMap: userMap,
           ),
         );
