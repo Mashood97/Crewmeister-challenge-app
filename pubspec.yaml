@@ -30,7 +30,7 @@ dependencies:
 dev_dependencies:
   bloc_test: ^9.1.7
   build_runner: ^2.4.13
-  chopper_generator: ^8.0.3
+  chopper_generator: ^8.1.0
   flutter_test:
     sdk: flutter
   json_serializable: ^6.9.0
