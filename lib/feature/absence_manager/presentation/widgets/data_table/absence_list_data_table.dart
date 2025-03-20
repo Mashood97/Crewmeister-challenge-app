@@ -8,10 +8,12 @@ import 'package:flutter/material.dart';
 class AbsenceListDataTable extends StatelessWidget {
   const AbsenceListDataTable({
     required this.absenceList,
+    required this.userMap,
     super.key,
   });
 
   final List<AbsenceResponseEntity> absenceList;
+  final Map<int, String> userMap;
 
   @override
   Widget build(BuildContext context) {
@@ -69,8 +71,7 @@ class AbsenceListDataTable extends StatelessWidget {
         ),
       ],
       source: _AbsenceDataTableDataSource(
-        absenceList: absenceList,
-      ),
+          absenceList: absenceList, userMap: userMap),
       horizontalMargin: 20,
       dataRowHeight: 80,
       autoRowsToHeight: true,
@@ -85,9 +86,11 @@ class AbsenceListDataTable extends StatelessWidget {
 class _AbsenceDataTableDataSource extends DataTableSource {
   _AbsenceDataTableDataSource({
     required this.absenceList,
+    required this.userMap,
   });
 
   final List<AbsenceResponseEntity> absenceList;
+  final Map<int, String> userMap;
 
   @override
   DataRow? getRow(int index) {
@@ -110,9 +113,9 @@ class _AbsenceDataTableDataSource extends DataTableSource {
             ),
           ),
         ),
-        const DataCell(
+        DataCell(
           Text(
-            'Member Name',
+            userMap[item.userId] ?? '-',
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
           ),
@@ -128,8 +131,7 @@ class _AbsenceDataTableDataSource extends DataTableSource {
         ),
         DataCell(
           Text(
-            item.absenceStartDate.isTextNotNullAndNotEmpty ==
-                true
+            item.absenceStartDate.isTextNotNullAndNotEmpty == true
                 ? item.absenceStartDate ?? '-'
                 : '-',
             overflow: TextOverflow.ellipsis,

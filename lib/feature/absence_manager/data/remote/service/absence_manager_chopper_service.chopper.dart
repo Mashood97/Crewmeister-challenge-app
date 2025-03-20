@@ -28,4 +28,15 @@ final class _$AbsenceManagerChopperService
     );
     return client.send<Map<String, dynamic>, Map<String, dynamic>>($request);
   }
+
+  @override
+  Future<Response<Map<String, dynamic>>> fetchUserListFromServer() {
+    final Uri $url = Uri.parse('/c44894ee-1ba2-4bfe-ba16-1261959e619f');
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+    );
+    return client.send<Map<String, dynamic>, Map<String, dynamic>>($request);
+  }
 }

@@ -6,16 +6,19 @@ import 'package:flutter/material.dart';
 class AbsenceListView extends StatelessWidget {
   const AbsenceListView({
     required this.absenceList,
+    required this.userMap,
     super.key,
   });
 
   final List<AbsenceResponseEntity> absenceList;
+  final Map<int, String> userMap;
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       itemBuilder: (ctx, index) => _AbsenceListItem(
         absenceResponseEntity: absenceList[index],
+        userMap: userMap,
         index: index,
       ),
       itemCount: absenceList.length,
@@ -27,10 +30,12 @@ class _AbsenceListItem extends StatelessWidget {
   const _AbsenceListItem({
     required this.absenceResponseEntity,
     required this.index,
+    required this.userMap,
   });
 
   final AbsenceResponseEntity absenceResponseEntity;
   final int index;
+  final Map<int, String> userMap;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +46,7 @@ class _AbsenceListItem extends StatelessWidget {
           seconds: 1,
         ),
       ),
-      title: const Text('Member Name'),
+      title: Text(userMap[absenceResponseEntity.userId] ?? '-'),
       leading: CircleAvatar(
         child: FittedBox(
           child: Padding(

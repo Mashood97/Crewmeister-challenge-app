@@ -64,6 +64,7 @@ class AbsenceManagerDesktopView extends StatelessWidget {
             }
             return AbsenceListDataTable(
               absenceList: state.absenceList,
+              userMap: state.userMap,
             );
 
             //   ListView.builder(

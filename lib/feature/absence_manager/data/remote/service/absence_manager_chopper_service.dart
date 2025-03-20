@@ -11,5 +11,10 @@ abstract class AbsenceManagerChopperService extends ChopperService {
   @GET(
     path: ApiRoutes.fetchAbsencesRoute,
   )
-  Future<Response<Map<String,dynamic>>> fetchAbsenceListFromServer();
+  Future<Response<Map<String, dynamic>>> fetchAbsenceListFromServer();
+
+  @GET(
+    path: ApiRoutes.fetchUsersRoute,
+  )
+  Future<Response<Map<String, dynamic>>> fetchUserListFromServer();
 }

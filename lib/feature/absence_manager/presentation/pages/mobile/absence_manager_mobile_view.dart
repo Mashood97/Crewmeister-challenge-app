@@ -101,6 +101,7 @@ class AbsenceManagerMobileView extends StatelessWidget {
 
                   return AbsenceListView(
                     absenceList: state.absenceList,
+                    userMap: state.userMap,
                   );
                 },
               ),
