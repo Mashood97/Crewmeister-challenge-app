@@ -10,6 +10,7 @@ import 'package:absence_manager_app/widget/loader/app_loader.dart';
 import 'package:absence_manager_app/widget/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class AbsenceManagerMobileView extends StatelessWidget {
   const AbsenceManagerMobileView({
@@ -46,42 +47,50 @@ class AbsenceManagerMobileView extends StatelessWidget {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(AppConstant.kAppSidePadding),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(
-                  width: getResponsiveValue(context, 220),
-                  height: getResponsiveValue(context, 50),
-                  child: Card(
-                    child: Center(
-                      child: RichText(
-                        text: TextSpan(
-                          text: 'Total Absences: ',
-                          style: context.theme.textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.w200,
-                          ),
-                          children: [
-                            TextSpan(
-                              text:
-                                  '${absenceListBloc.state.absenceList.length}',
-                              style: context.theme.textTheme.titleMedium,
-                            ),
-                          ],
+      body: BlocProvider.value(
+        value: absenceListBloc,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(AppConstant.kAppSidePadding),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    width: getResponsiveValue(context, 220),
+                    height: getResponsiveValue(context, 50),
+                    child: Card(
+                      child: Center(
+                        child: BlocSelector<AbsenceListBloc, AbsenceListState,
+                            int>(
+                          selector: (state) {
+                            return state.absenceList.length;
+                          },
+                          builder: (context, state) {
+                            return RichText(
+                              text: TextSpan(
+                                text: 'Total Absences: ',
+                                style: context.theme.textTheme.titleSmall
+                                    ?.copyWith(
+                                  fontWeight: FontWeight.w200,
+                                ),
+                                children: [
+                                  TextSpan(
+                                    text: '$state',
+                                    style: context.theme.textTheme.titleMedium,
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
                         ),
                       ),
                     ),
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             ),
-          ),
-          Expanded(
-            child: BlocProvider.value(
-              value: absenceListBloc,
+            Expanded(
               child: BlocConsumer<AbsenceListBloc, AbsenceListState>(
                 listener: (ctx, state) {
                   if (state is AbsenceListFailure) {
@@ -102,12 +111,14 @@ class AbsenceManagerMobileView extends StatelessWidget {
                   return AbsenceListView(
                     absenceList: state.absenceList,
                     userMap: state.userMap,
-                  );
+                  ).animate().fade(
+                        duration: 1000.ms,
+                      );
                 },
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
