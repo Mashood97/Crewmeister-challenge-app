@@ -31,7 +31,7 @@ $ flutter run --flavor staging --target lib/main_staging.dart
 $ flutter run --flavor production --target lib/main_production.dart
 ```
 
-_\*Absence Manager App works on iOS, Android, Web, and Windows._
+_\*Absence Manager App works on iOS, Android, Web._
 
 ---
 
@@ -66,9 +66,9 @@ This project relies on [flutter_localizations][flutter_localizations_link] and f
 ```arb
 {
     "@@locale": "en",
-    "counterAppBarTitle": "Counter",
+    "counterAppBarTitle": "Absence Manager",
     "@counterAppBarTitle": {
-        "description": "Text shown in the AppBar of the Counter Page"
+        "description": "Text shown in the AppBar of the Absence Manager"
     }
 }
 ```
@@ -78,10 +78,10 @@ This project relies on [flutter_localizations][flutter_localizations_link] and f
 ```arb
 {
     "@@locale": "en",
-    "counterAppBarTitle": "Counter",
+    "counterAppBarTitle": "Absence Manager",
     "@counterAppBarTitle": {
-        "description": "Text shown in the AppBar of the Counter Page"
-    },
+        "description": "Text shown in the AppBar of the Absence Manager"
+    }
     "helloWorld": "Hello World",
     "@helloWorld": {
         "description": "Hello World Text"
@@ -134,10 +134,10 @@ Update the `CFBundleLocalizations` array in the `Info.plist` at `ios/Runner/Info
 
 ```arb
 {
-    "@@locale": "en",
-    "counterAppBarTitle": "Counter",
+     "@@locale": "en",
+    "counterAppBarTitle": "Absence Manager",
     "@counterAppBarTitle": {
-        "description": "Text shown in the AppBar of the Counter Page"
+        "description": "Text shown in the AppBar of the Absence Manager"
     }
 }
 ```
@@ -146,10 +146,10 @@ Update the `CFBundleLocalizations` array in the `Info.plist` at `ios/Runner/Info
 
 ```arb
 {
-    "@@locale": "es",
-    "counterAppBarTitle": "Contador",
+      "@@locale": "es",
+    "counterAppBarTitle": "Absence Manager",
     "@counterAppBarTitle": {
-        "description": "Texto mostrado en la AppBar de la página del contador"
+        "description": "Text shown in the AppBar of the Absence Manager"
     }
 }
 ```
