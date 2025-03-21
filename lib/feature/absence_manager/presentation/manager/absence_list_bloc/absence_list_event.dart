@@ -20,6 +20,22 @@ final class FetchAbsenceListEvent extends AbsenceListEvent {
       ];
 }
 
+final class FetchMoreAbsenceListEvent extends AbsenceListEvent {
+  const FetchMoreAbsenceListEvent({
+    this.selectedAbsenceType = '',
+    this.selectedDateTime = '',
+  });
+
+  final String selectedAbsenceType;
+  final String selectedDateTime;
+
+  @override
+  List<Object?> get props => [
+    selectedAbsenceType,
+    selectedDateTime,
+  ];
+}
+
 final class FetchUserListEvent extends AbsenceListEvent {
   const FetchUserListEvent();
 

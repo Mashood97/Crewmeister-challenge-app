@@ -8,6 +8,8 @@ abstract class AbsenceListState extends Equatable {
     this.hasFiltersApplied = false,
     this.selectedAbsenceTypeFilter = '',
     this.selectedDateFilter = '',
+    this.hasMore = false,
+    this.currentPage = 1,
   });
 
   final List<AbsenceResponseEntity> absenceList;
@@ -16,6 +18,8 @@ abstract class AbsenceListState extends Equatable {
   final String selectedAbsenceTypeFilter;
   final String selectedDateFilter;
   final bool hasFiltersApplied;
+  final bool hasMore;
+  final int currentPage;
 }
 
 class AbsenceListInitial extends AbsenceListState {
@@ -26,6 +30,8 @@ class AbsenceListInitial extends AbsenceListState {
     super.hasFiltersApplied,
     super.selectedAbsenceTypeFilter,
     super.selectedDateFilter,
+    super.currentPage,
+    super.hasMore,
   });
 
   @override
@@ -36,6 +42,8 @@ class AbsenceListInitial extends AbsenceListState {
         super.hasFiltersApplied,
         super.selectedAbsenceTypeFilter,
         super.selectedDateFilter,
+        super.currentPage,
+        super.hasMore,
       ];
 }
 
@@ -47,6 +55,8 @@ class AbsenceListLoading extends AbsenceListState {
     super.hasFiltersApplied,
     super.selectedAbsenceTypeFilter,
     super.selectedDateFilter,
+    super.currentPage,
+    super.hasMore,
   });
 
   @override
@@ -57,6 +67,8 @@ class AbsenceListLoading extends AbsenceListState {
         super.hasFiltersApplied,
         super.selectedAbsenceTypeFilter,
         super.selectedDateFilter,
+        super.currentPage,
+        super.hasMore,
       ];
 }
 
@@ -68,6 +80,8 @@ class AbsenceListLoaded extends AbsenceListState {
     super.hasFiltersApplied,
     super.selectedAbsenceTypeFilter,
     super.selectedDateFilter,
+    super.currentPage,
+    super.hasMore,
   });
 
   @override
@@ -78,6 +92,8 @@ class AbsenceListLoaded extends AbsenceListState {
         super.hasFiltersApplied,
         super.selectedAbsenceTypeFilter,
         super.selectedDateFilter,
+        super.currentPage,
+        super.hasMore,
       ];
 }
 
@@ -90,6 +106,8 @@ class AbsenceListFailure extends AbsenceListState {
     super.hasFiltersApplied,
     super.selectedAbsenceTypeFilter,
     super.selectedDateFilter,
+    super.currentPage,
+    super.hasMore,
   });
 
   final String errorMessage;
@@ -103,5 +121,7 @@ class AbsenceListFailure extends AbsenceListState {
         super.hasFiltersApplied,
         super.selectedAbsenceTypeFilter,
         super.selectedDateFilter,
+        super.currentPage,
+        super.hasMore,
       ];
 }

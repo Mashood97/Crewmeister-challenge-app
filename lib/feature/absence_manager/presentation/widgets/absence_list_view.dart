@@ -1,27 +1,35 @@
 import 'package:absence_manager_app/feature/absence_manager/domain/entities/response_entity/absence_response_entity.dart';
 import 'package:absence_manager_app/utils/extensions/context_extensions.dart';
 import 'package:absence_manager_app/utils/extensions/string_extensions.dart';
+import 'package:absence_manager_app/widget/loader/app_loader.dart';
 import 'package:flutter/material.dart';
 
 class AbsenceListView extends StatelessWidget {
   const AbsenceListView({
     required this.absenceList,
     required this.userMap,
+    required this.scrollController,
+    required this.hasMoreItems,
     super.key,
   });
 
   final List<AbsenceResponseEntity> absenceList;
   final Map<int, String> userMap;
+  final ScrollController scrollController;
+  final bool hasMoreItems;
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemBuilder: (ctx, index) => _AbsenceListItem(
-        absenceResponseEntity: absenceList[index],
-        userMap: userMap,
-        index: index,
-      ),
-      itemCount: absenceList.length,
+      controller: scrollController,
+      itemBuilder: (ctx, index) => index == absenceList.length
+          ? const AppLoader()
+          : _AbsenceListItem(
+              absenceResponseEntity: absenceList[index],
+              userMap: userMap,
+              index: index,
+            ),
+      itemCount: absenceList.length + (hasMoreItems ? 1 : 0),
     );
   }
 }

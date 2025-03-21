@@ -9,7 +9,6 @@ import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:intl/intl.dart';
 
 part 'absence_list_event.dart';
 
@@ -30,6 +29,11 @@ class AbsenceListBloc extends Bloc<AbsenceListEvent, AbsenceListState> {
       _fetchAbsenceList,
       transformer: sequential(),
     );
+
+    on<FetchMoreAbsenceListEvent>(
+      _fetchMoreAbsenceList,
+      transformer: droppable(),
+    );
     on<FetchUserListEvent>(
       _fetchUserList,
       transformer: sequential(),
@@ -41,6 +45,24 @@ class AbsenceListBloc extends Bloc<AbsenceListEvent, AbsenceListState> {
 
   final TextEditingController datePickerTextEditingController =
       TextEditingController();
+
+  final ScrollController scrollController = ScrollController();
+
+  void attachListenerToScrollController() {
+    scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (scrollController.position.pixels ==
+        scrollController.position.maxScrollExtent) {
+      add(
+        FetchMoreAbsenceListEvent(
+          selectedDateTime: state.selectedDateFilter,
+          selectedAbsenceType: state.selectedAbsenceTypeFilter,
+        ),
+      );
+    }
+  }
 
   Future<void> _fetchAbsenceList(
     FetchAbsenceListEvent event,
@@ -54,6 +76,7 @@ class AbsenceListBloc extends Bloc<AbsenceListEvent, AbsenceListState> {
         selectedDateFilter: state.selectedDateFilter,
         selectedAbsenceTypeFilter: state.selectedAbsenceTypeFilter,
         userMap: state.userMap,
+        hasMore: true,
       ),
     );
     final response = await absenceListUseCase.call(
@@ -70,6 +93,8 @@ class AbsenceListBloc extends Bloc<AbsenceListEvent, AbsenceListState> {
           errorMessage: error.errorStatus,
           hasFiltersApplied: state.hasFiltersApplied,
           userMap: state.userMap,
+          hasMore: false,
+          currentPage: state.currentPage,
         ),
       ),
       (success) {
@@ -100,9 +125,13 @@ class AbsenceListBloc extends Bloc<AbsenceListEvent, AbsenceListState> {
             },
           ).toList();
         }
+
+        // **Pagination Logic: Load only 10 items**
+        final paginatedList = absenceList.take(10).toList(); // First 10 items
+
         return emitter(
           AbsenceListLoaded(
-            absenceList: absenceList,
+            absenceList: paginatedList,
             selectedAbsenceTypeFilter:
                 eventAbsenceType.isEmpty && success.isNotEmpty
                     ? success.first.absenceType ?? ''
@@ -113,6 +142,79 @@ class AbsenceListBloc extends Bloc<AbsenceListEvent, AbsenceListState> {
             absenceTypeList:
                 success.map((data) => data.absenceType ?? '').toSet().toList(),
             userMap: state.userMap,
+            // If more than 10, there’s more data
+            hasMore: absenceList.length > 10,
+            currentPage: state.currentPage,
+          ),
+        );
+      },
+    );
+  }
+
+  /// **Handles Loading More Data**
+  Future<void> _fetchMoreAbsenceList(
+    FetchMoreAbsenceListEvent event,
+    Emitter<AbsenceListState> emitter,
+  ) async {
+    if (!state.hasMore) return; // No more data to load
+
+    final nextPage = state.currentPage + 1;
+    final response = await absenceListUseCase.call(NoParams());
+
+    response.fold(
+      (error) => emitter(
+        AbsenceListFailure(
+          absenceList: state.absenceList,
+          absenceTypeList: state.absenceTypeList,
+          selectedDateFilter: state.selectedDateFilter,
+          selectedAbsenceTypeFilter: state.selectedAbsenceTypeFilter,
+          errorMessage: error.errorStatus,
+          hasFiltersApplied: state.hasFiltersApplied,
+          userMap: state.userMap,
+          currentPage: state.currentPage,
+        ),
+      ),
+      (success) {
+        final remainingItems = success.skip(state.absenceList.length).toList();
+        var newItems = remainingItems.take(10).toList();
+
+        final eventAbsenceType = state.selectedAbsenceTypeFilter;
+        if (eventAbsenceType.isNotEmpty) {
+          newItems = newItems
+              .where(
+                (absence) =>
+                    absence.absenceType?.toLowerCase() ==
+                    eventAbsenceType.toLowerCase(),
+              )
+              .toList();
+        }
+
+        if (state.selectedDateFilter.isNotEmpty) {
+          final userSelectedDateTime = DateTime.parse(state.selectedDateFilter);
+
+          newItems = newItems.where(
+            (absence) {
+              final createdAt = DateTime.parse(
+                absence.createdAt ?? DateTime.now().toString(),
+              );
+
+              return createdAt.year == userSelectedDateTime.year &&
+                  createdAt.month == userSelectedDateTime.month &&
+                  createdAt.day == userSelectedDateTime.day;
+            },
+          ).toList();
+        }
+
+        emitter(
+          AbsenceListLoaded(
+            absenceList: [...state.absenceList, ...newItems],
+            absenceTypeList: state.absenceTypeList,
+            selectedAbsenceTypeFilter: state.selectedAbsenceTypeFilter,
+            selectedDateFilter: state.selectedDateFilter,
+            hasFiltersApplied: state.hasFiltersApplied,
+            userMap: state.userMap,
+            hasMore: remainingItems.length > 10,
+            currentPage: nextPage,
           ),
         );
       },
