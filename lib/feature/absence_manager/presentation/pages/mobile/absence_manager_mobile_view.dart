@@ -1,16 +1,16 @@
-import 'package:absence_manager_app/feature/absence_manager/domain/entities/response_entity/absence_response_entity.dart';
 import 'package:absence_manager_app/feature/absence_manager/presentation/manager/absence_list_bloc/absence_list_bloc.dart';
 import 'package:absence_manager_app/feature/absence_manager/presentation/widgets/absence_list_view.dart';
+import 'package:absence_manager_app/feature/absence_manager/presentation/widgets/filter_icon.dart';
 import 'package:absence_manager_app/utils/constant/app_constant.dart';
 import 'package:absence_manager_app/utils/constant/app_snackbar.dart';
 import 'package:absence_manager_app/utils/extensions/context_extensions.dart';
-import 'package:absence_manager_app/utils/navigation/app_navigations.dart';
 import 'package:absence_manager_app/widget/error/app_error.dart';
 import 'package:absence_manager_app/widget/loader/app_loader.dart';
 import 'package:absence_manager_app/widget/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 
 class AbsenceManagerMobileView extends StatelessWidget {
   const AbsenceManagerMobileView({
@@ -131,18 +131,26 @@ class AbsenceManagerMobileView extends StatelessWidget {
                   if (state is AbsenceListLoading) {
                     return const AppLoader();
                   }
+                  if (state is AbsenceListLoaded) {
+                    return state.absenceList.isEmpty
+                        ? const AppError(
+                            errorMessage: 'No Record Found',
+                          )
+                        : AbsenceListView(
+                            absenceList: state.absenceList,
+                            userMap: state.userMap,
+                          ).animate().fade(
+                              duration: 2.seconds,
+                            );
+                  }
                   if (state is AbsenceListFailure) {
                     return AppError(
                       errorMessage: state.errorMessage,
                     );
                   }
-
-                  return AbsenceListView(
-                    absenceList: state.absenceList,
-                    userMap: state.userMap,
-                  ).animate().fade(
-                        duration: 2.seconds,
-                      );
+                  return const AppError(
+                    errorMessage: 'Unable to fetch the records',
+                  );
                 },
               ),
             ),
@@ -156,88 +164,9 @@ class AbsenceManagerMobileView extends StatelessWidget {
     required BuildContext context,
     required bool isFilterApplied,
   }) {
-    return IconButton(
-      onPressed: () async {
-        await showModalBottomSheet(
-          context: context,
-          builder: (ctx) => Padding(
-            padding: const EdgeInsets.all(
-              AppConstant.kAppSidePadding,
-            ),
-            child: Column(
-              children: [
-                ListTile(
-                  title: Text(
-                    'Filters',
-                    style: ctx.theme.textTheme.titleMedium,
-                  ),
-                  contentPadding: EdgeInsets.zero,
-                  trailing: IconButton(
-                    onPressed: () {
-                      AppNavigations().navigateBack(context: ctx);
-                    },
-                    icon: const Icon(
-                      Icons.cancel,
-                    ),
-                  ),
-                ),
-                BlocProvider.value(
-                  value: absenceListBloc,
-                  child: BlocBuilder<AbsenceListBloc, AbsenceListState>(
-                    builder: (context, state) {
-                      return DropdownButtonFormField<String>(
-                        value: state.selectedAbsenceTypeFilter,
-                        onChanged: (value) {
-                          if (value != null) {
-                            AppNavigations().navigateBack(context: ctx);
-                            absenceListBloc.add(
-                              FetchAbsenceListEvent(
-                                selectedAbsenceType: value,
-                              ),
-                            );
-                          }
-                        },
-                        items: state.absenceTypeList
-                            .map<DropdownMenuItem<String>>((String type) {
-                          return DropdownMenuItem<String>(
-                            value: type,
-                            child: Text(type),
-                          );
-                        }).toList(),
-                      );
-                    },
-                  ),
-                ),
-                const Spacer(),
-                if (!isFilterApplied)
-                  const SizedBox.shrink()
-                else
-                  SizedBox(
-                    width: double.infinity,
-                    child: FilledButton(
-                      onPressed: () {
-                        AppNavigations().navigateBack(context: ctx);
-                        absenceListBloc.add(
-                          const FetchAbsenceListEvent(),
-                        );
-                      },
-                      child: const Text('Clear Filters'),
-                    ),
-                  ),
-                if (!isFilterApplied)
-                  const SizedBox.shrink()
-                else
-                  const SizedBox(
-                    height: 10,
-                  ),
-              ],
-            ),
-          ),
-        );
-      },
-      icon: const Icon(
-        Icons.filter_list,
-      ),
+    return FilterIcon(
+      absenceListBloc: absenceListBloc,
+      isFilterApplied: isFilterApplied,
     );
   }
 }

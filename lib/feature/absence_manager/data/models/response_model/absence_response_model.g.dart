@@ -21,6 +21,7 @@ AbsenceResponseModel _$AbsenceResponseModelFromJson(
           absenceStartDate: $checkedConvert('startDate', (v) => v as String?),
           absenceEndDate: $checkedConvert('endDate', (v) => v as String?),
           userId: $checkedConvert('userId', (v) => (v as num?)?.toInt()),
+          createdAt: $checkedConvert('createdAt', (v) => v as String?),
         );
         return val;
       },
@@ -42,4 +43,5 @@ Map<String, dynamic> _$AbsenceResponseModelToJson(
       'admitterNote': instance.admitterNote,
       'startDate': instance.absenceStartDate,
       'endDate': instance.absenceEndDate,
+      'createdAt': instance.createdAt,
     };

@@ -14,6 +14,7 @@ class AbsenceResponseModel extends AbsenceResponseEntity {
     required this.absenceStartDate,
     required this.absenceEndDate,
     required this.userId,
+    required this.createdAt,
   }) : super(
           absenceType: absenceType,
           memberNote: memberNote,
@@ -23,6 +24,7 @@ class AbsenceResponseModel extends AbsenceResponseEntity {
           absenceStartDate: absenceStartDate,
           absenceEndDate: absenceEndDate,
           userId: userId,
+          createdAt: createdAt,
         );
 
   factory AbsenceResponseModel.fromJson(Map<String, dynamic> json) =>
@@ -53,4 +55,7 @@ class AbsenceResponseModel extends AbsenceResponseEntity {
   @override
   @JsonKey(name: 'endDate')
   final String? absenceEndDate;
+
+  @JsonKey(name: 'createdAt')
+  final String? createdAt;
 }

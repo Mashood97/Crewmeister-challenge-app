@@ -7,12 +7,14 @@ abstract class AbsenceListState extends Equatable {
     required this.absenceTypeList,
     this.hasFiltersApplied = false,
     this.selectedAbsenceTypeFilter = '',
+    this.selectedDateFilter = '',
   });
 
   final List<AbsenceResponseEntity> absenceList;
   final Map<int, String> userMap; // Maps userID -> userName
   final List<String> absenceTypeList;
   final String selectedAbsenceTypeFilter;
+  final String selectedDateFilter;
   final bool hasFiltersApplied;
 }
 
@@ -23,6 +25,7 @@ class AbsenceListInitial extends AbsenceListState {
     required super.absenceTypeList,
     super.hasFiltersApplied,
     super.selectedAbsenceTypeFilter,
+    super.selectedDateFilter,
   });
 
   @override
@@ -32,6 +35,7 @@ class AbsenceListInitial extends AbsenceListState {
         super.absenceTypeList,
         super.hasFiltersApplied,
         super.selectedAbsenceTypeFilter,
+        super.selectedDateFilter,
       ];
 }
 
@@ -42,6 +46,7 @@ class AbsenceListLoading extends AbsenceListState {
     required super.absenceTypeList,
     super.hasFiltersApplied,
     super.selectedAbsenceTypeFilter,
+    super.selectedDateFilter,
   });
 
   @override
@@ -51,6 +56,7 @@ class AbsenceListLoading extends AbsenceListState {
         super.absenceTypeList,
         super.hasFiltersApplied,
         super.selectedAbsenceTypeFilter,
+        super.selectedDateFilter,
       ];
 }
 
@@ -61,6 +67,7 @@ class AbsenceListLoaded extends AbsenceListState {
     required super.absenceTypeList,
     super.hasFiltersApplied,
     super.selectedAbsenceTypeFilter,
+    super.selectedDateFilter,
   });
 
   @override
@@ -70,6 +77,7 @@ class AbsenceListLoaded extends AbsenceListState {
         super.absenceTypeList,
         super.hasFiltersApplied,
         super.selectedAbsenceTypeFilter,
+        super.selectedDateFilter,
       ];
 }
 
@@ -81,6 +89,7 @@ class AbsenceListFailure extends AbsenceListState {
     required super.userMap,
     super.hasFiltersApplied,
     super.selectedAbsenceTypeFilter,
+    super.selectedDateFilter,
   });
 
   final String errorMessage;
@@ -93,5 +102,6 @@ class AbsenceListFailure extends AbsenceListState {
         errorMessage,
         super.hasFiltersApplied,
         super.selectedAbsenceTypeFilter,
+        super.selectedDateFilter,
       ];
 }
