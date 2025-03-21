@@ -8,6 +8,8 @@ import 'package:absence_manager_app/utils/extensions/string_extensions.dart';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 
 part 'absence_list_event.dart';
 
@@ -37,6 +39,9 @@ class AbsenceListBloc extends Bloc<AbsenceListEvent, AbsenceListState> {
   final FetchAbsenceListUseCase absenceListUseCase;
   final FetchUserListUseCase fetchUserListUseCase;
 
+  final TextEditingController datePickerTextEditingController =
+      TextEditingController();
+
   Future<void> _fetchAbsenceList(
     FetchAbsenceListEvent event,
     Emitter<AbsenceListState> emitter,
@@ -46,6 +51,7 @@ class AbsenceListBloc extends Bloc<AbsenceListEvent, AbsenceListState> {
         absenceList: const [],
         absenceTypeList: state.absenceTypeList,
         hasFiltersApplied: state.hasFiltersApplied,
+        selectedDateFilter: state.selectedDateFilter,
         selectedAbsenceTypeFilter: state.selectedAbsenceTypeFilter,
         userMap: state.userMap,
       ),
@@ -59,6 +65,7 @@ class AbsenceListBloc extends Bloc<AbsenceListEvent, AbsenceListState> {
         AbsenceListFailure(
           absenceList: state.absenceList,
           absenceTypeList: state.absenceTypeList,
+          selectedDateFilter: event.selectedDateTime,
           selectedAbsenceTypeFilter: event.selectedAbsenceType,
           errorMessage: error.errorStatus,
           hasFiltersApplied: state.hasFiltersApplied,
@@ -67,22 +74,42 @@ class AbsenceListBloc extends Bloc<AbsenceListEvent, AbsenceListState> {
       ),
       (success) {
         var absenceList = success;
-        if (event.selectedAbsenceType.isNotEmpty) {
+        final eventAbsenceType = event.selectedAbsenceType;
+        if (eventAbsenceType.isNotEmpty) {
           absenceList = absenceList
               .where(
                 (absence) =>
                     absence.absenceType?.toLowerCase() ==
-                    event.selectedAbsenceType.toLowerCase(),
+                    eventAbsenceType.toLowerCase(),
               )
               .toList();
+        }
+
+        if (event.selectedDateTime.isNotEmpty) {
+          final userSelectedDateTime = DateTime.parse(event.selectedDateTime);
+
+          absenceList = absenceList.where(
+            (absence) {
+              final createdAt = DateTime.parse(
+                absence.createdAt ?? DateTime.now().toString(),
+              );
+
+              return createdAt.year == userSelectedDateTime.year &&
+                  createdAt.month == userSelectedDateTime.month &&
+                  createdAt.day == userSelectedDateTime.day;
+            },
+          ).toList();
         }
         return emitter(
           AbsenceListLoaded(
             absenceList: absenceList,
-            selectedAbsenceTypeFilter: event.selectedAbsenceType.isEmpty
-                ? absenceList.first.absenceType ?? ''
-                : event.selectedAbsenceType,
-            hasFiltersApplied: event.selectedAbsenceType.isNotEmpty,
+            selectedAbsenceTypeFilter:
+                eventAbsenceType.isEmpty && success.isNotEmpty
+                    ? success.first.absenceType ?? ''
+                    : eventAbsenceType,
+            hasFiltersApplied: event.selectedAbsenceType.isNotEmpty ||
+                event.selectedDateTime.isNotEmpty,
+            selectedDateFilter: event.selectedDateTime,
             absenceTypeList:
                 success.map((data) => data.absenceType ?? '').toSet().toList(),
             userMap: state.userMap,
@@ -101,6 +128,7 @@ class AbsenceListBloc extends Bloc<AbsenceListEvent, AbsenceListState> {
         absenceList: state.absenceList,
         absenceTypeList: state.absenceTypeList,
         hasFiltersApplied: state.hasFiltersApplied,
+        selectedDateFilter: state.selectedDateFilter,
         selectedAbsenceTypeFilter: state.selectedAbsenceTypeFilter,
         userMap: state.userMap,
       ),
@@ -114,6 +142,7 @@ class AbsenceListBloc extends Bloc<AbsenceListEvent, AbsenceListState> {
         AbsenceListFailure(
           absenceList: state.absenceList,
           hasFiltersApplied: state.hasFiltersApplied,
+          selectedDateFilter: state.selectedDateFilter,
           absenceTypeList: state.absenceTypeList,
           selectedAbsenceTypeFilter: state.selectedAbsenceTypeFilter,
           errorMessage: error.errorStatus,
@@ -132,6 +161,7 @@ class AbsenceListBloc extends Bloc<AbsenceListEvent, AbsenceListState> {
           AbsenceListLoaded(
             absenceList: state.absenceList,
             absenceTypeList: state.absenceTypeList,
+            selectedDateFilter: state.selectedDateFilter,
             hasFiltersApplied: state.hasFiltersApplied,
             selectedAbsenceTypeFilter: state.selectedAbsenceTypeFilter,
             userMap: userMap,

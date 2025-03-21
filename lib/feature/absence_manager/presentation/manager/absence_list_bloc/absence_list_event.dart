@@ -7,13 +7,16 @@ sealed class AbsenceListEvent extends Equatable {
 final class FetchAbsenceListEvent extends AbsenceListEvent {
   const FetchAbsenceListEvent({
     this.selectedAbsenceType = '',
+    this.selectedDateTime = '',
   });
 
   final String selectedAbsenceType;
+  final String selectedDateTime;
 
   @override
   List<Object?> get props => [
         selectedAbsenceType,
+        selectedDateTime,
       ];
 }
 

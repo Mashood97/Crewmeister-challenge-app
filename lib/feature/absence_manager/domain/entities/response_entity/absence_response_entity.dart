@@ -16,6 +16,7 @@ class AbsenceResponseEntity extends Equatable {
     required this.absenceStartDate,
     required this.absenceEndDate,
     required this.userId,
+    required this.createdAt,
   });
 
   final int? userId;
@@ -26,6 +27,7 @@ class AbsenceResponseEntity extends Equatable {
   final String? admitterNote;
   final String? absenceStartDate;
   final String? absenceEndDate;
+  final String? createdAt;
 
   @override
   List<Object?> get props => [
@@ -37,6 +39,7 @@ class AbsenceResponseEntity extends Equatable {
         absenceStartDate,
         absenceEndDate,
         userId,
+    createdAt,
       ];
 
   String get absenceStatus => confirmedAt == null && rejectedAt == null
