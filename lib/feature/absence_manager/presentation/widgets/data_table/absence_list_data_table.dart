@@ -1,48 +1,65 @@
 import 'package:absence_manager_app/feature/absence_manager/domain/entities/response_entity/absence_response_entity.dart';
-import 'package:absence_manager_app/utils/extensions/context_extensions.dart';
+import 'package:absence_manager_app/feature/absence_manager/presentation/manager/absence_list_bloc/absence_list_bloc.dart';
+import 'package:absence_manager_app/feature/absence_manager/presentation/widgets/filter_icon.dart';
+import 'package:absence_manager_app/utils/constant/app_constant.dart';
 import 'package:absence_manager_app/utils/extensions/string_extensions.dart';
-import 'package:absence_manager_app/widget/responsive.dart';
+import 'package:absence_manager_app/widget/error/app_error.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AbsenceListDataTable extends StatelessWidget {
   const AbsenceListDataTable({
     required this.absenceList,
     required this.userMap,
+    required this.absenceListBloc,
     super.key,
   });
 
   final List<AbsenceResponseEntity> absenceList;
   final Map<int, String> userMap;
+  final AbsenceListBloc absenceListBloc;
+
+  Widget getFilterIcon({
+    required BuildContext context,
+    required bool isFilterApplied,
+  }) {
+    return FilterIcon(
+      absenceListBloc: absenceListBloc,
+      isFilterApplied: isFilterApplied,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return PaginatedDataTable2(
-      header: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          SizedBox(
-            width: getResponsiveValue(context, 200),
-            child: Card(
-              child: Center(
-                child: RichText(
-                  text: TextSpan(
-                    text: 'Total Absences: ',
-                    style: context.theme.textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w200,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: '${absenceList.length}',
-                        style: context.theme.textTheme.titleMedium,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+      header: Padding(
+        padding: const EdgeInsets.all(AppConstant.kAppSidePadding),
+        child: TextFormField(
+          decoration: InputDecoration(
+            labelText: 'Search',
+            prefixIcon: const Icon(
+              Icons.search_outlined,
             ),
-          )
-        ],
+            icon: BlocSelector<AbsenceListBloc, AbsenceListState, bool>(
+              selector: (state) {
+                return state.hasFiltersApplied;
+              },
+              builder: (ctx, state) {
+                return !state
+                    ? getFilterIcon(context: ctx, isFilterApplied: state)
+                    : Badge(
+                        smallSize: 10,
+                        largeSize: 15,
+                        child: getFilterIcon(
+                          context: ctx,
+                          isFilterApplied: state,
+                        ),
+                      );
+              },
+            ),
+          ),
+        ),
       ),
       columns: const [
         DataColumn2(
@@ -71,7 +88,12 @@ class AbsenceListDataTable extends StatelessWidget {
         ),
       ],
       source: _AbsenceDataTableDataSource(
-          absenceList: absenceList, userMap: userMap),
+        absenceList: absenceList,
+        userMap: userMap,
+      ),
+      empty: const AppError(
+        errorMessage: 'No Record Found',
+      ),
       horizontalMargin: 20,
       dataRowHeight: 80,
       autoRowsToHeight: true,
@@ -94,6 +116,7 @@ class _AbsenceDataTableDataSource extends DataTableSource {
 
   @override
   DataRow? getRow(int index) {
+
     final item = absenceList[index];
     return DataRow2.byIndex(
       index: index,
