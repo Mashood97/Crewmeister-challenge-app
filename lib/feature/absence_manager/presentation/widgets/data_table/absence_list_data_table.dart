@@ -33,6 +33,13 @@ class AbsenceListDataTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PaginatedDataTable2(
+      onPageChanged: (_) {
+        /// This condition will makesure this will paginate only if there's more
+        /// data to load otherwise it won't trigger.
+        if (absenceListBloc.state.hasMore) {
+          absenceListBloc.add(const FetchMoreAbsenceListEvent());
+        }
+      },
       header: Padding(
         padding: const EdgeInsets.all(AppConstant.kAppSidePadding),
         child: TextFormField(
@@ -116,7 +123,6 @@ class _AbsenceDataTableDataSource extends DataTableSource {
 
   @override
   DataRow? getRow(int index) {
-
     final item = absenceList[index];
     return DataRow2.byIndex(
       index: index,

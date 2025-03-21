@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 class AbsenceManagerMobileView extends StatelessWidget {
   const AbsenceManagerMobileView({
     required this.absenceListBloc,
@@ -128,7 +127,8 @@ class AbsenceManagerMobileView extends StatelessWidget {
                   }
                 },
                 builder: (context, state) {
-                  if (state is AbsenceListLoading) {
+                  if (state is AbsenceListLoading &&
+                      state.absenceList.isEmpty) {
                     return const AppLoader();
                   }
                   if (state is AbsenceListLoaded) {
@@ -139,6 +139,8 @@ class AbsenceManagerMobileView extends StatelessWidget {
                         : AbsenceListView(
                             absenceList: state.absenceList,
                             userMap: state.userMap,
+                            scrollController: absenceListBloc.scrollController,
+                            hasMoreItems: state.hasMore,
                           ).animate().fade(
                               duration: 2.seconds,
                             );

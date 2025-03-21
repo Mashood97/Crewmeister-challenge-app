@@ -8,6 +8,7 @@ import 'package:absence_manager_app/widget/loader/app_loader.dart';
 import 'package:absence_manager_app/widget/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 class AbsenceManagerView extends StatefulWidget {
   const AbsenceManagerView({super.key});
@@ -26,6 +27,12 @@ class _AbsenceManagerViewState extends State<AbsenceManagerView> {
     absenceListBloc
       ..add(const FetchAbsenceListEvent())
       ..add(const FetchUserListEvent());
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!ResponsiveBreakpoints.of(context).isDesktop) {
+        absenceListBloc.attachListenerToScrollController();
+      }
+    });
   }
 
   @override
@@ -42,7 +49,6 @@ class _AbsenceManagerViewState extends State<AbsenceManagerView> {
       ),
       desktop: AbsenceManagerDesktopView(
         absenceListBloc: absenceListBloc,
-
       ),
     );
   }
