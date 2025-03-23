@@ -100,6 +100,10 @@ class AbsenceListDataTable extends StatelessWidget {
           label: Text('Admitter note'),
           size: ColumnSize.L,
         ),
+        DataColumn2(
+          label: Text('Download'),
+          size: ColumnSize.S,
+        ),
       ],
       source: _AbsenceDataTableDataSource(
         absenceList: absenceList,
@@ -201,6 +205,19 @@ class _AbsenceDataTableDataSource extends DataTableSource {
                 : '-',
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
+          ),
+        ),
+        DataCell(
+          IconButton(
+            icon: const Icon(
+              Icons.download,
+            ),
+            onPressed: () {
+              AppConstant().generateAndDownloadICalFile(
+                userName: userMap[item.userId] ?? '-',
+                entity: item,
+              );
+            },
           ),
         ),
       ],

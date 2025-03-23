@@ -1,5 +1,6 @@
 import 'package:absence_manager_app/feature/absence_manager/domain/entities/response_entity/absence_response_entity.dart';
 import 'package:absence_manager_app/feature/absence_manager/presentation/widgets/period_view.dart';
+import 'package:absence_manager_app/utils/constant/app_constant.dart';
 import 'package:absence_manager_app/utils/extensions/context_extensions.dart';
 import 'package:absence_manager_app/utils/extensions/string_extensions.dart';
 import 'package:absence_manager_app/widget/loader/app_loader.dart';
@@ -67,6 +68,17 @@ class _AbsenceListItem extends StatelessWidget {
             ),
           ),
         ),
+      ),
+      trailing: IconButton(
+        icon: const Icon(
+          Icons.download,
+        ),
+        onPressed: () {
+          AppConstant().generateAndDownloadICalFile(
+            userName: userMap[absenceResponseEntity.userId] ?? '-',
+            entity: absenceResponseEntity,
+          );
+        },
       ),
       expandedAlignment: Alignment.centerLeft,
       children: [
@@ -145,21 +157,5 @@ class _AbsenceListItem extends StatelessWidget {
       ),
       subtitle: trailing,
     );
-
-    //   Padding(
-    //   padding: const EdgeInsets.all(8),
-    //   child:
-    //
-    //   Row(
-    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //     children: [
-    //       Text(
-    //         title,
-    //         style: context.theme.textTheme.titleSmall,
-    //       ),
-    //       trailing,
-    //     ],
-    //   ),
-    // );
   }
 }

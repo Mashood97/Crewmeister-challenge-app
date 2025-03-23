@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:absence_manager_app/core/usecase/usecase.dart';
-import 'package:absence_manager_app/feature/absence_manager/data/models/response_model/absence_response_model.dart';
 import 'package:absence_manager_app/feature/absence_manager/domain/entities/response_entity/absence_response_entity.dart';
 import 'package:absence_manager_app/feature/absence_manager/domain/use_cases/fetch_absence_list_usecase.dart';
 import 'package:absence_manager_app/feature/absence_manager/domain/use_cases/fetch_user_list_usecase.dart';
