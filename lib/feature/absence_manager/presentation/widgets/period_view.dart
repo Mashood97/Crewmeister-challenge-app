@@ -25,11 +25,12 @@ class PeriodView extends StatelessWidget {
                       .inDays ==
                   0
               ? '${startDate?.getFormattedDate}\n${endDate.getFormattedDate}\n1 Day'
-              : '${startDate.getFormattedDate}\n${endDate.getFormattedDate}\n${DateTime.parse(
+              : '${startDate.getFormattedDate}\n${endDate.getFormattedDate}\n'
+                  '${DateTime.parse(
                   endDate ?? DateTime.now().toIso8601String(),
                 ).difference(DateTime.parse(
-                    startDate ?? DateTime.now().toIso8601String(),
-                  )).inDays} Days'
+                        startDate ?? DateTime.now().toIso8601String(),
+                      )).inDays} Days'
           : '-',
       overflow: TextOverflow.ellipsis,
       maxLines: 3,
