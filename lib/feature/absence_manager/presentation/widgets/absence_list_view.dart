@@ -1,4 +1,6 @@
 import 'package:absence_manager_app/feature/absence_manager/domain/entities/response_entity/absence_response_entity.dart';
+import 'package:absence_manager_app/feature/absence_manager/presentation/widgets/period_view.dart';
+import 'package:absence_manager_app/utils/constant/app_constant.dart';
 import 'package:absence_manager_app/utils/extensions/context_extensions.dart';
 import 'package:absence_manager_app/utils/extensions/string_extensions.dart';
 import 'package:absence_manager_app/widget/loader/app_loader.dart';
@@ -22,7 +24,7 @@ class AbsenceListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
       controller: scrollController,
-      itemBuilder: (ctx, index) => index == absenceList.length
+      itemBuilder: (ctx, index) => index == absenceList.length && hasMoreItems
           ? const AppLoader()
           : _AbsenceListItem(
               absenceResponseEntity: absenceList[index],
@@ -105,11 +107,9 @@ class _AbsenceListItem extends StatelessWidget {
         buildAbsenceDetail(
           context,
           title: 'Period:',
-          trailing: Text(
-            absenceResponseEntity.absenceStartDate.isTextNotNullAndNotEmpty ==
-                    true
-                ? absenceResponseEntity.absenceStartDate ?? '-'
-                : '-',
+          trailing: PeriodView(
+            endDate: absenceResponseEntity.absenceEndDate,
+            startDate: absenceResponseEntity.absenceStartDate,
           ),
         ),
         buildAbsenceDetail(
@@ -130,6 +130,24 @@ class _AbsenceListItem extends StatelessWidget {
                 : '-',
           ),
         ),
+        buildAbsenceDetail(context,
+            title: 'Download:',
+            trailing: Padding(
+              padding: const EdgeInsets.all(
+                AppConstant.kAppSidePadding,
+              ),
+              child: ElevatedButton(
+                child: const Icon(
+                  Icons.download,
+                ),
+                onPressed: () {
+                  AppConstant().generateAndDownloadICalFile(
+                    userName: userMap[absenceResponseEntity.userId] ?? '-',
+                    entity: absenceResponseEntity,
+                  );
+                },
+              ),
+            )),
       ],
     );
   }
@@ -146,21 +164,5 @@ class _AbsenceListItem extends StatelessWidget {
       ),
       subtitle: trailing,
     );
-
-    //   Padding(
-    //   padding: const EdgeInsets.all(8),
-    //   child:
-    //
-    //   Row(
-    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //     children: [
-    //       Text(
-    //         title,
-    //         style: context.theme.textTheme.titleSmall,
-    //       ),
-    //       trailing,
-    //     ],
-    //   ),
-    // );
   }
 }

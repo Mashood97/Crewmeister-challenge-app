@@ -7,9 +7,11 @@ import 'package:absence_manager_app/utils/extensions/context_extensions.dart';
 import 'package:absence_manager_app/utils/theme/cubit/cubit/theme_cubit.dart';
 import 'package:absence_manager_app/widget/error/app_error.dart';
 import 'package:absence_manager_app/widget/loader/app_loader.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 
 class AbsenceManagerDesktopView extends StatelessWidget {
   const AbsenceManagerDesktopView({

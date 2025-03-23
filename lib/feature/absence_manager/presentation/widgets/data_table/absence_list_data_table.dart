@@ -1,6 +1,7 @@
 import 'package:absence_manager_app/feature/absence_manager/domain/entities/response_entity/absence_response_entity.dart';
 import 'package:absence_manager_app/feature/absence_manager/presentation/manager/absence_list_bloc/absence_list_bloc.dart';
 import 'package:absence_manager_app/feature/absence_manager/presentation/widgets/filter_icon.dart';
+import 'package:absence_manager_app/feature/absence_manager/presentation/widgets/period_view.dart';
 import 'package:absence_manager_app/utils/constant/app_constant.dart';
 import 'package:absence_manager_app/utils/extensions/string_extensions.dart';
 import 'package:absence_manager_app/widget/error/app_error.dart';
@@ -37,7 +38,13 @@ class AbsenceListDataTable extends StatelessWidget {
         /// This condition will makesure this will paginate only if there's more
         /// data to load otherwise it won't trigger.
         if (absenceListBloc.state.hasMore) {
-          absenceListBloc.add(const FetchMoreAbsenceListEvent());
+          absenceListBloc.add(
+            FetchMoreAbsenceListEvent(
+              selectedDateTime: absenceListBloc.state.selectedDateFilter,
+              selectedAbsenceType:
+                  absenceListBloc.state.selectedAbsenceTypeFilter,
+            ),
+          );
         }
       },
       header: Padding(
@@ -92,6 +99,10 @@ class AbsenceListDataTable extends StatelessWidget {
         DataColumn2(
           label: Text('Admitter note'),
           size: ColumnSize.L,
+        ),
+        DataColumn2(
+          label: Text('Download'),
+          size: ColumnSize.S,
         ),
       ],
       source: _AbsenceDataTableDataSource(
@@ -159,12 +170,9 @@ class _AbsenceDataTableDataSource extends DataTableSource {
           ),
         ),
         DataCell(
-          Text(
-            item.absenceStartDate.isTextNotNullAndNotEmpty == true
-                ? item.absenceStartDate ?? '-'
-                : '-',
-            overflow: TextOverflow.ellipsis,
-            maxLines: 2,
+          PeriodView(
+            endDate: item.absenceEndDate,
+            startDate: item.absenceStartDate,
           ),
         ),
         DataCell(
@@ -197,6 +205,19 @@ class _AbsenceDataTableDataSource extends DataTableSource {
                 : '-',
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
+          ),
+        ),
+        DataCell(
+          IconButton(
+            icon: const Icon(
+              Icons.download,
+            ),
+            onPressed: () {
+              AppConstant().generateAndDownloadICalFile(
+                userName: userMap[item.userId] ?? '-',
+                entity: item,
+              );
+            },
           ),
         ),
       ],

@@ -60,7 +60,13 @@ class FilterIcon extends StatelessWidget {
                   child: BlocBuilder<AbsenceListBloc, AbsenceListState>(
                     builder: (context, state) {
                       return DropdownButtonFormField<String>(
-                        value: state.selectedAbsenceTypeFilter,
+                        value: state.selectedAbsenceTypeFilter.isEmpty
+                            ? null
+                            : state.selectedAbsenceTypeFilter,
+                        hint: Text(
+                          'Select Absence Type',
+                          style: context.theme.textTheme.bodyMedium,
+                        ),
                         onChanged: (value) {
                           if (value != null) {
                             /// This will apply the absence type filter to fetch
@@ -69,6 +75,8 @@ class FilterIcon extends StatelessWidget {
                             absenceListBloc.add(
                               FetchAbsenceListEvent(
                                 selectedAbsenceType: value,
+                                selectedDateTime:
+                                    absenceListBloc.state.selectedDateFilter,
                               ),
                             );
                           }
@@ -77,7 +85,10 @@ class FilterIcon extends StatelessWidget {
                             .map<DropdownMenuItem<String>>((String type) {
                           return DropdownMenuItem<String>(
                             value: type,
-                            child: Text(type),
+                            child: Text(
+                              type,
+                              style: context.theme.textTheme.bodyMedium,
+                            ),
                           );
                         }).toList(),
                       );
@@ -105,22 +116,30 @@ class FilterIcon extends StatelessWidget {
                     ),
                   ),
                   onTap: () async {
-                    final result = await showDatePicker(
+                    final result = await showDateRangePicker(
                       context: ctx,
                       firstDate: DateTime(1900),
                       currentDate: DateTime.now(),
-                      initialDate: DateTime.now(),
+                      initialDateRange: DateTimeRange(
+                        start: DateTime.now(),
+                        end: DateTime.now().add(
+                          const Duration(days: 5),
+                        ),
+                      ),
                       lastDate: DateTime(5000),
                     );
                     if (result != null) {
                       /// This will apply the date filter to fetch
                       /// data as per the user selected date.
                       absenceListBloc.datePickerTextEditingController.text =
-                          DateFormat.yMEd().format(result);
+                          '${DateFormat.yMEd().format(result.start)}-${DateFormat.yMEd().format(result.end)}';
                       AppNavigations().navigateBack(context: ctx);
                       absenceListBloc.add(
                         FetchAbsenceListEvent(
-                          selectedDateTime: result.toIso8601String(),
+                          selectedAbsenceType:
+                              absenceListBloc.state.selectedAbsenceTypeFilter,
+                          selectedDateTime:
+                              '${result.start.toIso8601String()},${result.end.toIso8601String()}',
                         ),
                       );
                     }
