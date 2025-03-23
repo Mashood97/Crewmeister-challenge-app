@@ -141,6 +141,7 @@ class AbsenceManagerMobileView extends StatelessWidget {
                             userMap: state.userMap,
                             scrollController: absenceListBloc.scrollController,
                             hasMoreItems: state.hasMore,
+
                           ).animate().fade(
                               duration: 2.seconds,
                             );

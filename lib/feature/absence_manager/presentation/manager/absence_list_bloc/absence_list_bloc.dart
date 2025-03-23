@@ -178,6 +178,13 @@ class AbsenceListBloc extends Bloc<AbsenceListEvent, AbsenceListState> {
     }).toList();
   }
 
+  String getPeriods({
+    required DateTime startDate,
+    required DateTime endDate,
+  }) {
+    return '${endDate.difference(startDate).inDays} Days';
+  }
+
   /// **Handles Loading More Data**
   Future<void> _fetchMoreAbsenceList(
     FetchMoreAbsenceListEvent event,
@@ -221,7 +228,8 @@ class AbsenceListBloc extends Bloc<AbsenceListEvent, AbsenceListState> {
           );
         }
 
-        final remainingItems = filteredItems.skip(state.absenceList.length).toList();
+        final remainingItems =
+            filteredItems.skip(state.absenceList.length).toList();
 
         final newItems = remainingItems.take(10).toList();
         print("LENGTH ISSS ${remainingItems.length}");

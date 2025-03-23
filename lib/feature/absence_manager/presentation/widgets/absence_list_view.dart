@@ -1,4 +1,5 @@
 import 'package:absence_manager_app/feature/absence_manager/domain/entities/response_entity/absence_response_entity.dart';
+import 'package:absence_manager_app/feature/absence_manager/presentation/widgets/period_view.dart';
 import 'package:absence_manager_app/utils/extensions/context_extensions.dart';
 import 'package:absence_manager_app/utils/extensions/string_extensions.dart';
 import 'package:absence_manager_app/widget/loader/app_loader.dart';
@@ -105,11 +106,9 @@ class _AbsenceListItem extends StatelessWidget {
         buildAbsenceDetail(
           context,
           title: 'Period:',
-          trailing: Text(
-            absenceResponseEntity.absenceStartDate.isTextNotNullAndNotEmpty ==
-                    true
-                ? absenceResponseEntity.absenceStartDate ?? '-'
-                : '-',
+          trailing: PeriodView(
+            endDate: absenceResponseEntity.absenceEndDate,
+            startDate: absenceResponseEntity.absenceStartDate,
           ),
         ),
         buildAbsenceDetail(
