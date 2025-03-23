@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:absence_manager_app/core/usecase/usecase.dart';
+import 'package:absence_manager_app/feature/absence_manager/data/models/response_model/absence_response_model.dart';
 import 'package:absence_manager_app/feature/absence_manager/domain/entities/response_entity/absence_response_entity.dart';
 import 'package:absence_manager_app/feature/absence_manager/domain/use_cases/fetch_absence_list_usecase.dart';
 import 'package:absence_manager_app/feature/absence_manager/domain/use_cases/fetch_user_list_usecase.dart';
@@ -9,6 +10,7 @@ import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 
 part 'absence_list_event.dart';
 
@@ -99,31 +101,22 @@ class AbsenceListBloc extends Bloc<AbsenceListEvent, AbsenceListState> {
       ),
       (success) {
         var absenceList = success;
-        final eventAbsenceType = event.selectedAbsenceType;
-        if (eventAbsenceType.isNotEmpty) {
-          absenceList = absenceList
-              .where(
-                (absence) =>
-                    absence.absenceType?.toLowerCase() ==
-                    eventAbsenceType.toLowerCase(),
-              )
-              .toList();
+
+        /// Filter by Absence Type
+
+        if (event.selectedAbsenceType.isNotEmpty) {
+          absenceList = _getFilterByAbsenceType(
+            absenceList: absenceList,
+            selectedAbsenceType: event.selectedAbsenceType,
+          );
         }
 
+        /// Filter by DateTime
         if (event.selectedDateTime.isNotEmpty) {
-          final userSelectedDateTime = DateTime.parse(event.selectedDateTime);
-
-          absenceList = absenceList.where(
-            (absence) {
-              final createdAt = DateTime.parse(
-                absence.createdAt ?? DateTime.now().toString(),
-              );
-
-              return createdAt.year == userSelectedDateTime.year &&
-                  createdAt.month == userSelectedDateTime.month &&
-                  createdAt.day == userSelectedDateTime.day;
-            },
-          ).toList();
+          absenceList = _getFilterByDateTime(
+            absenceList: absenceList,
+            selectedDateTime: event.selectedDateTime,
+          );
         }
 
         // **Pagination Logic: Load only 10 items**
@@ -132,10 +125,10 @@ class AbsenceListBloc extends Bloc<AbsenceListEvent, AbsenceListState> {
         return emitter(
           AbsenceListLoaded(
             absenceList: paginatedList,
-            selectedAbsenceTypeFilter:
-                eventAbsenceType.isEmpty && success.isNotEmpty
-                    ? success.first.absenceType ?? ''
-                    : eventAbsenceType,
+            selectedAbsenceTypeFilter: event.selectedAbsenceType,
+            // eventAbsenceType.isEmpty && success.isNotEmpty
+            //     ? success.first.absenceType ?? ''
+            //     : eventAbsenceType,
             hasFiltersApplied: event.selectedAbsenceType.isNotEmpty ||
                 event.selectedDateTime.isNotEmpty,
             selectedDateFilter: event.selectedDateTime,
@@ -149,6 +142,40 @@ class AbsenceListBloc extends Bloc<AbsenceListEvent, AbsenceListState> {
         );
       },
     );
+  }
+
+  List<AbsenceResponseEntity> _getFilterByAbsenceType({
+    required String selectedAbsenceType,
+    required List<AbsenceResponseEntity> absenceList,
+  }) {
+    return absenceList
+        .where(
+          (absence) =>
+              absence.absenceType?.toLowerCase() ==
+              selectedAbsenceType.toLowerCase(),
+        )
+        .toList();
+  }
+
+  List<AbsenceResponseEntity> _getFilterByDateTime({
+    required String selectedDateTime,
+    required List<AbsenceResponseEntity> absenceList,
+  }) {
+    final result = selectedDateTime.split(',');
+    final userSelectedStartDate = DateTime.parse(result.first);
+    final userSelectedEndDate = DateTime.parse(result.last);
+
+    //TODO: FIX THIS FILTER TO STOP REBUILDING ITEMS.
+    return absenceList.where((absence) {
+      final startDate = DateTime.parse(
+          absence.absenceStartDate ?? DateTime.now().toIso8601String());
+      final endDate = DateTime.parse(absence.absenceEndDate ??
+          DateTime.now().add(const Duration(days: 5)).toIso8601String());
+
+      // Check if the absence fully falls within the selected range
+      return (startDate.isAfter(userSelectedStartDate)) &&
+          (endDate.isBefore(userSelectedEndDate));
+    }).toList();
   }
 
   /// **Handles Loading More Data**
@@ -166,8 +193,8 @@ class AbsenceListBloc extends Bloc<AbsenceListEvent, AbsenceListState> {
         AbsenceListFailure(
           absenceList: state.absenceList,
           absenceTypeList: state.absenceTypeList,
-          selectedDateFilter: state.selectedDateFilter,
-          selectedAbsenceTypeFilter: state.selectedAbsenceTypeFilter,
+          selectedDateFilter: event.selectedDateTime,
+          selectedAbsenceTypeFilter: event.selectedAbsenceType,
           errorMessage: error.errorStatus,
           hasFiltersApplied: state.hasFiltersApplied,
           userMap: state.userMap,
@@ -175,45 +202,49 @@ class AbsenceListBloc extends Bloc<AbsenceListEvent, AbsenceListState> {
         ),
       ),
       (success) {
-        final remainingItems = success.skip(state.absenceList.length).toList();
-        var newItems = remainingItems.take(10).toList();
+        var filteredItems = success;
 
-        final eventAbsenceType = state.selectedAbsenceTypeFilter;
-        if (eventAbsenceType.isNotEmpty) {
-          newItems = newItems
-              .where(
-                (absence) =>
-                    absence.absenceType?.toLowerCase() ==
-                    eventAbsenceType.toLowerCase(),
-              )
-              .toList();
+        /// Filter by Absence Type
+
+        if (event.selectedAbsenceType.isNotEmpty) {
+          filteredItems = _getFilterByAbsenceType(
+            absenceList: filteredItems,
+            selectedAbsenceType: event.selectedAbsenceType,
+          );
         }
 
-        if (state.selectedDateFilter.isNotEmpty) {
-          final userSelectedDateTime = DateTime.parse(state.selectedDateFilter);
-
-          newItems = newItems.where(
-            (absence) {
-              final createdAt = DateTime.parse(
-                absence.createdAt ?? DateTime.now().toString(),
-              );
-
-              return createdAt.year == userSelectedDateTime.year &&
-                  createdAt.month == userSelectedDateTime.month &&
-                  createdAt.day == userSelectedDateTime.day;
-            },
-          ).toList();
+        /// Filter by DateTime
+        if (event.selectedDateTime.isNotEmpty) {
+          filteredItems = _getFilterByDateTime(
+            absenceList: filteredItems,
+            selectedDateTime: event.selectedDateTime,
+          );
         }
+
+        final remainingItems = filteredItems.skip(state.absenceList.length).toList();
+
+        final newItems = remainingItems.take(10).toList();
+        print("LENGTH ISSS ${remainingItems.length}");
+
+        /// **Step 4: Check if we are actually adding new items**
+        final hasMore = newItems.isNotEmpty &&
+            !listEquals(
+              state.absenceList,
+              [
+                ...state.absenceList,
+                ...newItems,
+              ],
+            );
 
         emitter(
           AbsenceListLoaded(
             absenceList: [...state.absenceList, ...newItems],
             absenceTypeList: state.absenceTypeList,
-            selectedAbsenceTypeFilter: state.selectedAbsenceTypeFilter,
-            selectedDateFilter: state.selectedDateFilter,
+            selectedDateFilter: event.selectedDateTime,
+            selectedAbsenceTypeFilter: event.selectedAbsenceType,
             hasFiltersApplied: state.hasFiltersApplied,
             userMap: state.userMap,
-            hasMore: remainingItems.length > 10,
+            hasMore: hasMore,
             currentPage: nextPage,
           ),
         );

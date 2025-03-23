@@ -2,12 +2,6 @@
   <configuration default="false" name="development" type="FlutterRunConfigurationType" factoryName="Flutter">
     <option name="buildFlavor" value="development" />
     <option name="filePath" value="$PROJECT_DIR$/lib/main_development.dart" />
-    <method v="2">
-      <option name="RunConfigurationTask" enabled="true" run_configuration_name="emits [Loading, Loaded] when fetch absence List is successful" run_configuration_type="FlutterTestConfigType" />
-      <option name="RunConfigurationTask" enabled="true" run_configuration_name="emits [Loading, Loaded] when fetch user List is successful" run_configuration_type="FlutterTestConfigType" />
-      <option name="RunConfigurationTask" enabled="true" run_configuration_name="tests in absence_manager_bloc_test.dart" run_configuration_type="FlutterTestConfigType" />
-      <option name="RunConfigurationTask" enabled="true" run_configuration_name="tests in absence_manager_repository_implementation_test.dart" run_configuration_type="FlutterTestConfigType" />
-      <option name="RunConfigurationTask" enabled="true" run_configuration_name="tests in fetch_user_list_usecase_test.dart" run_configuration_type="FlutterTestConfigType" />
-    </method>
+    <method v="2" />
   </configuration>
 </component>

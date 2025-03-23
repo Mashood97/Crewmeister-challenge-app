@@ -22,7 +22,7 @@ class AbsenceListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
       controller: scrollController,
-      itemBuilder: (ctx, index) => index == absenceList.length
+      itemBuilder: (ctx, index) => index == absenceList.length && hasMoreItems
           ? const AppLoader()
           : _AbsenceListItem(
               absenceResponseEntity: absenceList[index],

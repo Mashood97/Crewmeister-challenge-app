@@ -37,7 +37,13 @@ class AbsenceListDataTable extends StatelessWidget {
         /// This condition will makesure this will paginate only if there's more
         /// data to load otherwise it won't trigger.
         if (absenceListBloc.state.hasMore) {
-          absenceListBloc.add(const FetchMoreAbsenceListEvent());
+          absenceListBloc.add(
+            FetchMoreAbsenceListEvent(
+              selectedDateTime: absenceListBloc.state.selectedDateFilter,
+              selectedAbsenceType:
+                  absenceListBloc.state.selectedAbsenceTypeFilter,
+            ),
+          );
         }
       },
       header: Padding(
