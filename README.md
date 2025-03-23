@@ -7,7 +7,7 @@
 
 A Flutter application that allows company owners to manage employee absences, including sick leaves and vacations. The app provides a smooth user experience with filtering, pagination, and an option to export data as an iCal file for Outlook.
 
-📌 Features
+## 📌 Features
 ✅ Display a list of absences with employee names.
 ✅ Show the first 10 absences with pagination support.
 ✅ Display total absence count.
@@ -186,13 +186,15 @@ Alternatively, run `flutter run` and code generation will take place automatical
 
 ---
 
-🐛 Troubleshooting
+## 🐛 Troubleshooting
                     
 1. flutter: command not found -> Ensure Flutter SDK is installed and added to the system path.
 2. Error: Missing plugin -> Run flutter clean and flutter pub get again.
 3. App crashes on startup -> Check error logs using flutter run --verbose.
 
-📌 Additional Notes
+---
+
+## 📌 Additional Notes
 1. This project does not use API-based pagination, it implements manual pagination in Flutter.
 
 2. Filters & Pagination are applied dynamically on the frontend.
