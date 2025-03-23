@@ -16,10 +16,12 @@ import 'package:path_provider/path_provider.dart';
 class AbsenceManagerDesktopView extends StatelessWidget {
   const AbsenceManagerDesktopView({
     required this.absenceListBloc,
+    required this.themeCubit,
     super.key,
   });
 
   final AbsenceListBloc absenceListBloc;
+  final ThemeCubit themeCubit;
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +32,17 @@ class AbsenceManagerDesktopView extends StatelessWidget {
         actions: [
           FloatingActionButton.small(
             onPressed: () {
-              getItInstance.get<ThemeCubit>().changeThemeMode(ThemeMode.light);
+              if (themeCubit.state.themeMode == ThemeMode.light) {
+                themeCubit.changeThemeMode(ThemeMode.dark);
+              } else {
+                themeCubit.changeThemeMode(ThemeMode.light);
+              }
             },
-            child: const Icon(
-              Icons.settings,
-            ),
+            child: themeCubit.state.themeMode == ThemeMode.light
+                ? const Icon(Icons.dark_mode)
+                : const Icon(
+                    Icons.light_mode,
+                  ),
           ),
           const SizedBox(
             width: 20,

@@ -4,6 +4,7 @@ import 'package:absence_manager_app/feature/absence_manager/presentation/widgets
 import 'package:absence_manager_app/utils/constant/app_constant.dart';
 import 'package:absence_manager_app/utils/constant/app_snackbar.dart';
 import 'package:absence_manager_app/utils/extensions/context_extensions.dart';
+import 'package:absence_manager_app/utils/theme/cubit/cubit/theme_cubit.dart';
 import 'package:absence_manager_app/widget/error/app_error.dart';
 import 'package:absence_manager_app/widget/loader/app_loader.dart';
 import 'package:absence_manager_app/widget/responsive.dart';
@@ -14,10 +15,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class AbsenceManagerMobileView extends StatelessWidget {
   const AbsenceManagerMobileView({
     required this.absenceListBloc,
+    required this.themeCubit,
     super.key,
   });
 
   final AbsenceListBloc absenceListBloc;
+  final ThemeCubit themeCubit;
 
   @override
   Widget build(BuildContext context) {
@@ -29,14 +32,20 @@ class AbsenceManagerMobileView extends StatelessWidget {
           title: const Text('CrewAbsence'),
           centerTitle: false,
           actions: [
-            // FloatingActionButton.small(
-            //   onPressed: () {
-            //     getItInstance.get<ThemeCubit>().changeThemeMode(ThemeMode.light);
-            //   },
-            //   child: const Icon(
-            //     Icons.settings,
-            //   ),
-            // ),
+            FloatingActionButton.small(
+              onPressed: () {
+                if (themeCubit.state.themeMode == ThemeMode.light) {
+                  themeCubit.changeThemeMode(ThemeMode.dark);
+                } else {
+                  themeCubit.changeThemeMode(ThemeMode.light);
+                }
+              },
+              child: themeCubit.state.themeMode == ThemeMode.light
+                  ? const Icon(Icons.dark_mode)
+                  : const Icon(
+                Icons.light_mode,
+              ),
+            ),
             const SizedBox(
               width: 10,
             ),

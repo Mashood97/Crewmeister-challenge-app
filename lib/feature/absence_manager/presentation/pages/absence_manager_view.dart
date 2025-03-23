@@ -3,6 +3,7 @@ import 'package:absence_manager_app/feature/absence_manager/presentation/pages/d
 import 'package:absence_manager_app/feature/absence_manager/presentation/pages/mobile/absence_manager_mobile_view.dart';
 import 'package:absence_manager_app/utils/constant/app_snackbar.dart';
 import 'package:absence_manager_app/utils/di/di_container.dart';
+import 'package:absence_manager_app/utils/theme/cubit/cubit/theme_cubit.dart';
 import 'package:absence_manager_app/widget/error/app_error.dart';
 import 'package:absence_manager_app/widget/loader/app_loader.dart';
 import 'package:absence_manager_app/widget/responsive.dart';
@@ -19,11 +20,13 @@ class AbsenceManagerView extends StatefulWidget {
 
 class _AbsenceManagerViewState extends State<AbsenceManagerView> {
   late AbsenceListBloc absenceListBloc;
+  late ThemeCubit themeCubit;
 
   @override
   void initState() {
     super.initState();
     absenceListBloc = getItInstance.get<AbsenceListBloc>();
+    themeCubit = getItInstance.get<ThemeCubit>();
     absenceListBloc
       ..add(const FetchAbsenceListEvent())
       ..add(const FetchUserListEvent());
@@ -46,9 +49,11 @@ class _AbsenceManagerViewState extends State<AbsenceManagerView> {
     return ResponsiveView(
       mobile: AbsenceManagerMobileView(
         absenceListBloc: absenceListBloc,
+        themeCubit: themeCubit,
       ),
       desktop: AbsenceManagerDesktopView(
         absenceListBloc: absenceListBloc,
+        themeCubit: themeCubit,
       ),
     );
   }

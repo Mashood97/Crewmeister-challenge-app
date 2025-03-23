@@ -1,3 +1,4 @@
+import 'package:absence_manager_app/utils/extensions/context_extensions.dart';
 import 'package:flutter/material.dart';
 
 class AppLoader extends StatelessWidget {
@@ -6,7 +7,11 @@ class AppLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: CircularProgressIndicator.adaptive(),
+      child: SizedBox(
+        height: 24,
+        width: 24,
+        child: CircularProgressIndicator(),
+      ),
     );
   }
 }
