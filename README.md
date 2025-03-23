@@ -1,4 +1,4 @@
-Absence Manager 🏢📆
+## Absence Manager 🏢📆
 
 ![coverage][coverage_badge]
 [![style: very good analysis][very_good_analysis_badge]][very_good_analysis_link]
@@ -25,7 +25,7 @@ A Flutter application that allows company owners to manage employee absences, in
 ✅ (Bonus) Generate an iCal file to import into Outlook.
 
 ---
-🛠️ Tech Stack
+## 🛠️ Tech Stack
 Flutter (Framework)
 
 Dart (Programming Language)
