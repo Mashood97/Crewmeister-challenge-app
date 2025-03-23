@@ -185,7 +185,7 @@ flutter gen-l10n --arb-dir="lib/l10n/arb"
 Alternatively, run `flutter run` and code generation will take place automatically.
 
 ---
-🚀 Deployment to GitHub Pages
+## 🚀 Deployment to GitHub Pages
 I used the peanut package to deploy this Flutter web app to GitHub Pages. Below are the steps I followed:
 
 1️⃣ Install Peanut
