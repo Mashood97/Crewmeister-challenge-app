@@ -1,24 +1,27 @@
 import 'dart:io';
 
 import 'package:absence_manager_app/feature/absence_manager/domain/entities/response_entity/absence_response_entity.dart';
+import 'package:absence_manager_app/utils/constant/app_snackbar.dart';
 import 'package:absence_manager_app/utils/extensions/string_extensions.dart';
+import 'package:absence_manager_app/utils/navigation/go_router_navigation_delegate.dart';
 import 'package:path_provider/path_provider.dart';
 
 Future<void> saveCalendarFile({
   required AbsenceResponseEntity entity,
   required String userName,
 }) async {
-  // Ensure proper UTC date formatting
-  final now = DateTime.now();
-  final startDate = DateTime.parse(
-    entity.absenceStartDate ?? DateTime.now().toIso8601String(),
-  );
-  final endDate = DateTime.parse(
-    entity.absenceEndDate ?? DateTime.now().toIso8601String(),
-  );
+  try {
+    // Ensure proper UTC date formatting
+    final now = DateTime.now();
+    final startDate = DateTime.parse(
+      entity.absenceStartDate ?? DateTime.now().toIso8601String(),
+    );
+    final endDate = DateTime.parse(
+      entity.absenceEndDate ?? DateTime.now().toIso8601String(),
+    );
 
-  // Corrected iCal content
-  final icsContent = '''
+    // Corrected iCal content
+    final icsContent = '''
 BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//MyApp//EN
@@ -43,11 +46,38 @@ END:VEVENT
 END:VCALENDAR
 ''';
 
-  // Mobile (Android/iOS): Save the file
-  final directory = await getApplicationDocumentsDirectory();
-  final filePath = '${directory.path}/$userName(${_formatDate(now)}).ics';
-  final file = File(filePath);
-  await file.writeAsString(icsContent);
+
+    // Mobile (Android/iOS): Save the file
+    late Directory directory;
+
+    directory = await getApplicationDocumentsDirectory();
+
+    final folderPath = '${directory.path}/Absence_Manager';
+
+    // Ensure directory exists
+    final folder = Directory(folderPath);
+    if (!await folder.exists()) {
+      await folder.create(recursive: true);
+    }
+
+    final sanitizedFileName =
+        "${userName}_${DateTime.now().toUtc().toIso8601String().replaceAll(RegExp(r'[^a-zA-Z0-9_]'), '')}";
+
+    final filePath = '$folderPath/$sanitizedFileName.ics';
+
+    final file = File(filePath);
+
+    await file.writeAsString(icsContent);
+    AppSnackBar().showSuccessSnackBar(
+      context: GoRouterNavigationDelegate().parentNavigationKey.currentContext!,
+      successMsg: 'File downloaded successfully',
+    );
+  } catch (_) {
+    AppSnackBar().showErrorSnackBar(
+      context: GoRouterNavigationDelegate().parentNavigationKey.currentContext!,
+      error: 'File downloading failed',
+    );
+  }
 }
 
 // Helper function to format date for iCal
