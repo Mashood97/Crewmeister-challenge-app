@@ -64,14 +64,17 @@ END:VCALENDAR
       final url = html.Url.createObjectUrlFromBlob(blob);
 
       html.AnchorElement(href: url)
-        ..setAttribute('download', '$userName.ics')
+        ..setAttribute(
+          'download',
+          '$userName(${now.toIso8601String().getFormattedDate}).ics',
+        )
         ..click();
 
       html.Url.revokeObjectUrl(url);
     } else {
       // Mobile (Android/iOS): Save the file
       final directory = await getApplicationDocumentsDirectory();
-      final filePath = '${directory.path}/$userName.ics';
+      final filePath = '${directory.path}/$userName(${_formatDate(now)}).ics';
       final file = io.File(filePath);
       await file.writeAsString(icsContent);
     }

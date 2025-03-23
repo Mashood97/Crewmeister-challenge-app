@@ -69,17 +69,6 @@ class _AbsenceListItem extends StatelessWidget {
           ),
         ),
       ),
-      trailing: IconButton(
-        icon: const Icon(
-          Icons.download,
-        ),
-        onPressed: () {
-          AppConstant().generateAndDownloadICalFile(
-            userName: userMap[absenceResponseEntity.userId] ?? '-',
-            entity: absenceResponseEntity,
-          );
-        },
-      ),
       expandedAlignment: Alignment.centerLeft,
       children: [
         buildAbsenceDetail(
@@ -141,6 +130,24 @@ class _AbsenceListItem extends StatelessWidget {
                 : '-',
           ),
         ),
+        buildAbsenceDetail(context,
+            title: 'Download:',
+            trailing: Padding(
+              padding: const EdgeInsets.all(
+                AppConstant.kAppSidePadding,
+              ),
+              child: ElevatedButton(
+                child: const Icon(
+                  Icons.download,
+                ),
+                onPressed: () {
+                  AppConstant().generateAndDownloadICalFile(
+                    userName: userMap[absenceResponseEntity.userId] ?? '-',
+                    entity: absenceResponseEntity,
+                  );
+                },
+              ),
+            )),
       ],
     );
   }
