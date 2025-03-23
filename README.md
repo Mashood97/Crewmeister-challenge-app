@@ -185,6 +185,45 @@ flutter gen-l10n --arb-dir="lib/l10n/arb"
 Alternatively, run `flutter run` and code generation will take place automatically.
 
 ---
+🚀 Deployment to GitHub Pages
+I used the peanut package to deploy this Flutter web app to GitHub Pages. Below are the steps I followed:
+
+1️⃣ Install Peanut
+First, install the peanut package globally:
+
+dart pub global activate peanut
+
+
+2️⃣ Build and Deploy
+
+Run the following command to build and push the web app to the gh-pages branch: peanut --extra-args "--target=lib/main_development.dart"
+
+
+By default, this will:
+
+Build the Flutter web app using flutter build web --release
+
+Commit the generated files to the gh-pages branch
+
+If peanut doesn't automatically push, you can manually push the changes:
+
+ git push origin --set-upstream gh-pages   
+
+Automatically set up the deployment
+
+3️⃣ Enable GitHub Pages
+Go to your repository on GitHub.
+
+Navigate to Settings → Pages.
+
+Under Branch, select gh-pages and save.
+
+
+4️⃣ Access the Web App
+After deployment, your Flutter web app will be available at:
+https://mashood97.github.io/Crewmeister-challenge-app/
+
+---
 
 ## 🐛 Troubleshooting
                     
