@@ -20,7 +20,7 @@ final class _$AbsenceManagerChopperService
 
   @override
   Future<Response<Map<String, dynamic>>> fetchAbsenceListFromServer() {
-    final Uri $url = Uri.parse('/8c3cbc94-d330-45fb-9431-9856df605706');
+    final Uri $url = Uri.parse('/99b8c986-ba27-4fd7-9df4-9e3b57dedd1d');
     final Request $request = Request(
       'GET',
       $url,
@@ -31,7 +31,7 @@ final class _$AbsenceManagerChopperService
 
   @override
   Future<Response<Map<String, dynamic>>> fetchUserListFromServer() {
-    final Uri $url = Uri.parse('/c44894ee-1ba2-4bfe-ba16-1261959e619f');
+    final Uri $url = Uri.parse('/5d854afb-0f55-4c83-af35-b999c9ce2bee');
     final Request $request = Request(
       'GET',
       $url,

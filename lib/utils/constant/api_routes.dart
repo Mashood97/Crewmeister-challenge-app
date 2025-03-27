@@ -11,7 +11,7 @@ class ApiRoutes {
   static const String kBaseUrl = 'https://run.mocky.io/v3';
 
   static const String fetchAbsencesRoute =
-      '/8c3cbc94-d330-45fb-9431-9856df605706';
+      '/99b8c986-ba27-4fd7-9df4-9e3b57dedd1d';
   static const String fetchUsersRoute =
-      '/c44894ee-1ba2-4bfe-ba16-1261959e619f';
+      '/5d854afb-0f55-4c83-af35-b999c9ce2bee';
 }
